@@ -1,1 +1,391 @@
-# varala
+# <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ben's Notebook</title>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Reenie+Beanie&family=Patrick+Hand&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #c8b89a;
+    background-image:
+      radial-gradient(ellipse at 20% 30%, #b5a080 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 70%, #d4c4a8 0%, transparent 60%);
+    font-family: 'Patrick Hand', cursive;
+  }
+
+  .book-wrap {
+    perspective: 1200px;
+    animation: floatIn 1s ease-out both;
+  }
+
+  @keyframes floatIn {
+    from { opacity: 0; transform: rotateY(-30deg) translateY(40px); }
+    to   { opacity: 1; transform: rotateY(-8deg) translateY(0); }
+  }
+
+  .book {
+    width: 480px;
+    height: 640px;
+    position: relative;
+    transform: rotateY(-8deg) rotateX(2deg);
+    transform-style: preserve-3d;
+    filter: drop-shadow(-12px 20px 40px rgba(0,0,0,0.45));
+  }
+
+  /* Spine */
+  .spine {
+    position: absolute;
+    left: -38px;
+    top: 0;
+    width: 38px;
+    height: 100%;
+    background: linear-gradient(to right, #2c1a0e, #5c3820, #3d2210);
+    border-radius: 4px 0 0 4px;
+    transform: rotateY(-90deg) translateZ(0px);
+    transform-origin: right center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .spine-text {
+    font-family: 'Caveat', cursive;
+    font-size: 13px;
+    color: #d4a96a;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    transform: rotate(180deg);
+    letter-spacing: 3px;
+    opacity: 0.85;
+  }
+
+  .spine-line {
+    width: 2px;
+    height: 60px;
+    background: #d4a96a;
+    opacity: 0.3;
+    border-radius: 1px;
+  }
+
+  /* Cover */
+  .cover {
+    width: 100%;
+    height: 100%;
+    background: #2c5530;
+    background-image:
+      linear-gradient(135deg, #3a6b3f 0%, #2c5530 40%, #1e3d22 100%);
+    border-radius: 3px 8px 8px 3px;
+    position: relative;
+    overflow: hidden;
+    border-left: 4px solid #1a3318;
+  }
+
+  /* Fabric texture */
+  .cover::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 3px,
+        rgba(0,0,0,0.04) 3px,
+        rgba(0,0,0,0.04) 4px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 3px,
+        rgba(0,0,0,0.04) 3px,
+        rgba(0,0,0,0.04) 4px
+      );
+  }
+
+  /* Corner detail */
+  .corner {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    border: 2px solid rgba(255,255,255,0.12);
+  }
+  .corner-tl { top: 20px; left: 20px; border-right: none; border-bottom: none; border-radius: 4px 0 0 0; }
+  .corner-tr { top: 20px; right: 20px; border-left: none; border-bottom: none; border-radius: 0 4px 0 0; }
+  .corner-bl { bottom: 20px; left: 20px; border-right: none; border-top: none; border-radius: 0 0 0 4px; }
+  .corner-br { bottom: 20px; right: 20px; border-left: none; border-top: none; border-radius: 0 0 4px 0; }
+
+  /* Label area */
+  .label {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 340px;
+    background: #faf6ec;
+    border-radius: 6px;
+    padding: 30px 28px 36px;
+    box-shadow:
+      0 4px 20px rgba(0,0,0,0.3),
+      inset 0 1px 0 rgba(255,255,255,0.8);
+    animation: labelPop 0.8s 0.4s ease-out both;
+  }
+
+  @keyframes labelPop {
+    from { opacity: 0; transform: translate(-50%, -48%) scale(0.92); }
+    to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  }
+
+  /* Lined paper effect inside label */
+  .label::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: repeating-linear-gradient(
+      transparent,
+      transparent 27px,
+      #d4c5a0 27px,
+      #d4c5a0 28px
+    );
+    background-position: 0 52px;
+    border-radius: 6px;
+    opacity: 0.5;
+  }
+
+  .label-tape {
+    position: absolute;
+    top: -14px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 28px;
+    background: rgba(255, 235, 150, 0.72);
+    border-radius: 2px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  }
+
+  .label-tape::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 8px,
+      rgba(0,0,0,0.04) 8px,
+      rgba(0,0,0,0.04) 9px
+    );
+    border-radius: 2px;
+  }
+
+  .label-inner {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+  }
+
+  .belongs-to {
+    font-family: 'Patrick Hand', cursive;
+    font-size: 11px;
+    color: #888;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  .name {
+    font-family: 'Caveat', cursive;
+    font-size: 72px;
+    font-weight: 700;
+    color: #1a2e1a;
+    line-height: 1;
+    display: block;
+    margin-bottom: 4px;
+    text-shadow: 2px 3px 0 rgba(0,0,0,0.08);
+    animation: writeName 1.2s 0.8s ease-out both;
+  }
+
+  @keyframes writeName {
+    from { opacity: 0; transform: translateX(-8px) rotate(-2deg); }
+    to   { opacity: 1; transform: translateX(0) rotate(0deg); }
+  }
+
+  .underline {
+    width: 100%;
+    height: 2.5px;
+    background: linear-gradient(to right, transparent, #2c5530 20%, #2c5530 80%, transparent);
+    margin: 6px 0 20px;
+    border-radius: 2px;
+    animation: drawLine 0.8s 1.4s ease-out both;
+  }
+
+  @keyframes drawLine {
+    from { transform: scaleX(0); opacity: 0; }
+    to   { transform: scaleX(1); opacity: 1; }
+  }
+
+  .meta-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-top: 16px;
+  }
+
+  .meta-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .meta-label {
+    font-family: 'Patrick Hand', cursive;
+    font-size: 9px;
+    color: #aaa;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+
+  .meta-line {
+    width: 110px;
+    height: 1.5px;
+    background: #c8b89a;
+    border-radius: 1px;
+  }
+
+  .meta-line.short { width: 70px; }
+
+  .notebook-icon {
+    font-size: 28px;
+    display: block;
+    text-align: center;
+    margin-bottom: 14px;
+    animation: bounce 2s 2s ease-in-out infinite;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+  }
+
+  /* Page stack on right */
+  .page-stack {
+    position: absolute;
+    right: -5px;
+    top: 8px;
+    bottom: 8px;
+    width: 10px;
+    background: repeating-linear-gradient(
+      to bottom,
+      #f5f0e0,
+      #f5f0e0 2px,
+      #e8e0c8 2px,
+      #e8e0c8 4px
+    );
+    border-radius: 0 4px 4px 0;
+    box-shadow: 2px 2px 8px rgba(0,0,0,0.2);
+  }
+
+  /* Gold clasp / elastic band */
+  .elastic {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 70px;
+    background: linear-gradient(to right, #8b5e3c, #c49a6c, #8b5e3c);
+    border-radius: 3px;
+    box-shadow: 2px 2px 6px rgba(0,0,0,0.3);
+    z-index: 10;
+  }
+
+  /* Stars / doodle accents on cover */
+  .doodle {
+    position: absolute;
+    color: rgba(255,255,255,0.18);
+    font-family: 'Caveat', cursive;
+    font-size: 24px;
+    pointer-events: none;
+    animation: twinkle 3s ease-in-out infinite;
+  }
+
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.18; transform: scale(1) rotate(0deg); }
+    50% { opacity: 0.32; transform: scale(1.1) rotate(8deg); }
+  }
+
+  .d1 { top: 30px; right: 34px; animation-delay: 0s; }
+  .d2 { bottom: 40px; right: 50px; animation-delay: 1s; font-size: 18px; }
+  .d3 { top: 80px; left: 26px; animation-delay: 0.5s; font-size: 16px; }
+  .d4 { bottom: 80px; left: 34px; animation-delay: 1.5s; font-size: 20px; }
+</style>
+</head>
+<body>
+
+<div class="book-wrap">
+  <div class="book">
+
+    <!-- Spine -->
+    <div class="spine">
+      <div class="spine-line"></div>
+      <span class="spine-text">NOTEBOOK</span>
+      <div class="spine-line"></div>
+    </div>
+
+    <!-- Main Cover -->
+    <div class="cover">
+
+      <!-- Corner decorations -->
+      <div class="corner corner-tl"></div>
+      <div class="corner corner-tr"></div>
+      <div class="corner corner-bl"></div>
+      <div class="corner corner-br"></div>
+
+      <!-- Doodle accents -->
+      <span class="doodle d1">✦</span>
+      <span class="doodle d2">✶</span>
+      <span class="doodle d3">✧</span>
+      <span class="doodle d4">✦</span>
+
+      <!-- Central Label -->
+      <div class="label">
+        <div class="label-tape"></div>
+        <div class="label-inner">
+          <span class="notebook-icon">📓</span>
+          <span class="belongs-to">This notebook belongs to</span>
+          <span class="name">Ben</span>
+          <div class="underline"></div>
+          <div class="meta-row">
+            <div class="meta-field">
+              <span class="meta-label">Subject</span>
+              <div class="meta-line"></div>
+            </div>
+            <div class="meta-field">
+              <span class="meta-label">Year</span>
+              <div class="meta-line short"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Page stack -->
+      <div class="page-stack"></div>
+
+      <!-- Elastic band -->
+      <div class="elastic"></div>
+
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
